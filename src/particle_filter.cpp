@@ -91,6 +91,16 @@ void ParticleFilter::dataAssociation(vector<LandmarkObs> predicted,
    *   probably find it useful to implement this method and use it as a helper 
    *   during the updateWeights phase.
    */
+   for(auto obs : observations) {
+     // associate map landmark id of closest landmark
+     float min_dist = 1e6;
+     for(auto pred : predicted) {
+       float distance = sqrt(pow((obs.x - pred.x),2)+pow((obs.y - pred.y),2));
+       if(distance < min_dist) {
+         obs.id = pred.id;
+       }
+     }
+   }
 }
 
 void ParticleFilter::updateWeights(double sensor_range, double std_landmark[], 
