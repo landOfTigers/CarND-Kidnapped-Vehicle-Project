@@ -64,14 +64,20 @@ void ParticleFilter::prediction(double delta_t, double std_pos[],
    */
   
   for(auto p : particles) {
+    // update particle position
+    p.x += velocity*(sin(p.theta+yaw_rate*delta_t)-sin(p.theta))/yaw_rate;
+    p.y += velocity*(cos(p.theta)-cos(p.theta+yaw_rate*delta_t))/yaw_rate;
+    p.theta += yaw_rate*delta_t;
+
     // Create normal distributions for x, y and theta
     normal_distribution<double> dist_x(p.x, std_pos[0]);
     normal_distribution<double> dist_y(p.y, std_pos[1]);
     normal_distribution<double> dist_theta(p.theta, std_pos[2]);
     
-    p.x += velocity*(sin(p.theta+yaw_rate*delta_t)-sin(p.theta))/yaw_rate + dist_x(gen);
-    p.y += velocity*(cos(p.theta)-cos(p.theta+yaw_rate*delta_t))/yaw_rate + dist_y(gen);
-    p.theta += yaw_rate*delta_t + dist_theta(gen);
+    // add noise    
+    p.x += dist_x(gen);
+    p.y += dist_y(gen);
+    p.theta += dist_theta(gen);
   }
 }
 
@@ -85,7 +91,6 @@ void ParticleFilter::dataAssociation(vector<LandmarkObs> predicted,
    *   probably find it useful to implement this method and use it as a helper 
    *   during the updateWeights phase.
    */
-
 }
 
 void ParticleFilter::updateWeights(double sensor_range, double std_landmark[], 
