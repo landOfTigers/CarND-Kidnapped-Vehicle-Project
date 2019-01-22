@@ -22,6 +22,8 @@ using std::string;
 using std::vector;
 using std::normal_distribution;
 
+std::default_random_engine gen;
+
 void ParticleFilter::init(double x, double y, double theta, double std[]) {
   /**
    * TODO: Set the number of particles. Initialize all particles to 
@@ -32,8 +34,7 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
    *   (and others in this file).
    */
   
-  std::default_random_engine gen;   
-    // Create normal distributions for x, y and theta
+  // Create normal distributions for x, y and theta
   normal_distribution<double> dist_x(x, std[0]);
   normal_distribution<double> dist_y(y, std[1]);
   normal_distribution<double> dist_theta(theta, std[2]);
@@ -61,7 +62,17 @@ void ParticleFilter::prediction(double delta_t, double std_pos[],
    *  http://en.cppreference.com/w/cpp/numeric/random/normal_distribution
    *  http://www.cplusplus.com/reference/random/default_random_engine/
    */
-
+  
+  for(auto p : particles) {
+    // Create normal distributions for x, y and theta
+    normal_distribution<double> dist_x(p.x, std_pos[0]);
+    normal_distribution<double> dist_y(p.y, std_pos[1]);
+    normal_distribution<double> dist_theta(p.theta, std_pos[2]);
+    
+    p.x += velocity*(sin(p.theta+yaw_rate*delta_t)-sin(p.theta))/yaw_rate + dist_x(gen);
+    p.y += velocity*(cos(p.theta)-cos(p.theta+yaw_rate*delta_t))/yaw_rate + dist_y(gen);
+    p.theta += yaw_rate*delta_t + dist_theta(gen);
+  }
 }
 
 void ParticleFilter::dataAssociation(vector<LandmarkObs> predicted, 
