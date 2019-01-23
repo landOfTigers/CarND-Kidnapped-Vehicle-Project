@@ -63,7 +63,7 @@ void ParticleFilter::prediction(double delta_t, double std_pos[],
      *  http://www.cplusplus.com/reference/random/default_random_engine/
      */
 
-    for (auto p : particles) {
+    for (auto &p : particles) {
         // update particle position
         p.x += velocity * (sin(p.theta + yaw_rate * delta_t) - sin(p.theta)) / yaw_rate;
         p.y += velocity * (cos(p.theta) - cos(p.theta + yaw_rate * delta_t)) / yaw_rate;
@@ -91,11 +91,11 @@ void ParticleFilter::dataAssociation(vector<LandmarkObs> predicted,
      *   probably find it useful to implement this method and use it as a helper
      *   during the updateWeights phase.
      */
-    for (auto obs : observations) {
+    for (auto &obs : observations) {
         // associate map landmark id of closest landmark
         float min_dist = 1e6;
-        for (auto pred : predicted) {
-            float distance = sqrt(pow((obs.x - pred.x), 2) + pow((obs.y - pred.y), 2));
+        for (auto const &pred : predicted) {
+            double distance = dist(obs.x, obs.y, pred.x, pred.y);
             if (distance < min_dist) {
                 obs.id = pred.id;
             }
@@ -107,7 +107,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
                                    const vector<LandmarkObs> &observations,
                                    const Map &map_landmarks) {
     /**
-     * TODO: Update the weights of each particle using a mult-variate Gaussian
+     * TODO: Update the weights of each particle using a multi-variate Gaussian
      *   distribution. You can read more about this distribution here:
      *   https://en.wikipedia.org/wiki/Multivariate_normal_distribution
      * NOTE: The observations are given in the VEHICLE'S coordinate system.
