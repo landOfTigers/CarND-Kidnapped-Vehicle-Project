@@ -119,7 +119,74 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
      *   and the following is a good resource for the actual equation to implement
      *   (look at equation 3.33) http://planning.cs.uiuc.edu/node99.html
      */
+    for (auto &p : particles) {
 
+        // add those map landmarks within sensor range of the particle to the predicted vector
+        vector<LandmarkObs> predicted;
+        for (auto const &landmark : map_landmarks.landmark_list) {
+            double particle2LandmarkDistance = dist(p.x, p.y, landmark.x_f, landmark.y_f);
+            if (particle2LandmarkDistance < sensor_range) {
+                LandmarkObs mappedLandmark{
+                        landmark.id_i,
+                        landmark.x_f,
+                        landmark.y_f
+                };
+                predicted.push_back(mappedLandmark);
+            }
+        }
+
+        // predict landmark measurements (transform from vehicle to map coordinates)
+        vector<LandmarkObs> transformedObservations;
+        for (auto &obs : observations) {
+            double x_map = p.x + (cos(p.theta) * obs.x) - (sin(p.theta) * obs.y);
+            double y_map = p.y + (sin(p.theta) * obs.x) + (cos(p.theta) * obs.y);
+            LandmarkObs transformedObservation{
+                    obs.id,
+                    x_map,
+                    y_map
+            };
+            transformedObservations.push_back(transformedObservation);
+        }
+
+        // use dataAssociation fct to associate sensor measurements to map landmarks
+        dataAssociation(predicted, transformedObservations);
+
+        vector<int> associations;
+        vector<double> sense_x;
+        vector<double> sense_y;
+        for (auto const &obs : transformedObservations) {
+            associations.push_back(obs.id);
+            sense_x.push_back(obs.x);
+            sense_y.push_back(obs.y);
+        }
+        SetAssociations(p, associations, sense_x, sense_y);
+
+        // determine weight
+        double weight = 1.0;
+        for (auto const &obs : transformedObservations) {
+//           // find landmark with obs.id in predicted
+//           LandmarkObs associatedLandmark;
+//           for(const auto & landmark : predicted) {
+//               if(landmark.id == obs.id) {
+//                   associatedLandmark = landmark;
+//               }
+//           }
+
+            auto lm = map_landmarks.landmark_list[obs.id - 1];
+            LandmarkObs associatedLandmark{
+                    lm.id_i,
+                    lm.x_f,
+                    lm.y_f
+            };
+
+            weight *= multiv_prob(std_landmark[0], std_landmark[1], obs.x, obs.y, associatedLandmark.x,
+                                  associatedLandmark.y);
+        }
+
+        // TODO: normalize weight?
+
+        p.weight = weight;
+    }
 }
 
 void ParticleFilter::resample() {
