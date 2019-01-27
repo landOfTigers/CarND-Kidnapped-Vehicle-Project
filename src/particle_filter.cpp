@@ -206,7 +206,7 @@ void ParticleFilter::resample() {
     std::mt19937 gen(rd());
     // Create the distribution with weights
     std::discrete_distribution<> d(weights.begin(), weights.end());
-    for (int j = 0; i < num_particles; j++) {
+    for (int i = 0; i < num_particles; i++) {
         new_particles.push_back(particles[d(gen)]);
     }
 
