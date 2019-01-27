@@ -12,7 +12,19 @@ Particle::Particle(int id, double x, double y, double theta, double weight) {
     this->weight = weight;
 }
 
-double Particle::getWeight() {
+double Particle::get_x() {
+    return x;
+}
+
+double Particle::get_y() {
+    return x;
+}
+
+double Particle::get_theta() {
+    return x;
+}
+
+double Particle::get_weight() {
     return weight;
 }
 

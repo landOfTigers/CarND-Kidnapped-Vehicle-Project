@@ -119,21 +119,21 @@ int main() {
           Particle best_particle;
           double weight_sum = 0.0;
           for (int i = 0; i < num_particles; ++i) {
-            if (particles[i].getWeight() > highest_weight) {
-              highest_weight = particles[i].getWeight();
+            if (particles[i].get_weight() > highest_weight) {
+              highest_weight = particles[i].get_weight();
               best_particle = particles[i];
             }
 
-            weight_sum += particles[i].getWeight();
+            weight_sum += particles[i].get_weight();
           }
 
           std::cout << "highest w " << highest_weight << std::endl;
           std::cout << "average w " << weight_sum/num_particles << std::endl;
 
           json msgJson;
-          msgJson["best_particle_x"] = best_particle.x;
-          msgJson["best_particle_y"] = best_particle.y;
-          msgJson["best_particle_theta"] = best_particle.theta;
+          msgJson["best_particle_x"] = best_particle.get_x();
+          msgJson["best_particle_y"] = best_particle.get_y();
+          msgJson["best_particle_theta"] = best_particle.get_theta();
 
           // Optional message data used for debugging particle's sensing 
           //   and associations

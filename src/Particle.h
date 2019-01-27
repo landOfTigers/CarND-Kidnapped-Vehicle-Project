@@ -8,14 +8,13 @@ using std::normal_distribution;
 using std::default_random_engine;
 
 class Particle {
-    // TODO: make more fields private
 private:
     int id;
-    double weight;
-public:
     double x;
     double y;
     double theta;
+    double weight;
+public:
     std::vector<int> associations;
     std::vector<double> sense_x;
     std::vector<double> sense_y;
@@ -24,7 +23,13 @@ public:
 
     Particle(int id, double x, double y, double theta, double weight);
 
-    double getWeight();
+    double get_x();
+
+    double get_y();
+
+    double get_theta();
+
+    double get_weight();
 
     void prediction(double delta_t, double std_pos[], double velocity, double yaw_rate, default_random_engine &gen);
 
