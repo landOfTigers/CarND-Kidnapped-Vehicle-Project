@@ -11,6 +11,10 @@ Particle::Particle(int id, double x, double y, double theta, double weight) {
     this->weight = weight;
 }
 
+double Particle::getWeight() {
+    return weight;
+}
+
 void Particle::update_weight(const vector <LandmarkObs> transformedObservations, const Map &map_landmarks,
                              const double *std_landmark) {
     double weight = 1.0;

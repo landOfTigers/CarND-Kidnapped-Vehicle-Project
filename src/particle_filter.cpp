@@ -34,7 +34,7 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
     num_particles = 20;  // TODO: Set the number of particles
     for (int i = 0; i < num_particles; i++) {
         Particle p(i, dist_x(gen), dist_y(gen), dist_theta(gen), 1.0f);
-        weights.push_back(p.weight);
+        weights.push_back(p.getWeight());
         particles.push_back(p);
     }
 
@@ -99,8 +99,8 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 
     // update weights vector
     weights.clear();
-    for (auto const &p : particles) {
-        weights.push_back(p.weight);
+    for (auto &p : particles) {
+        weights.push_back(p.getWeight());
     }
 
 }

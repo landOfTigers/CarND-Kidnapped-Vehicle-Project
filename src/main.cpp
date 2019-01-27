@@ -119,12 +119,12 @@ int main() {
           Particle best_particle;
           double weight_sum = 0.0;
           for (int i = 0; i < num_particles; ++i) {
-            if (particles[i].weight > highest_weight) {
-              highest_weight = particles[i].weight;
+            if (particles[i].getWeight() > highest_weight) {
+              highest_weight = particles[i].getWeight();
               best_particle = particles[i];
             }
 
-            weight_sum += particles[i].weight;
+            weight_sum += particles[i].getWeight();
           }
 
           std::cout << "highest w " << highest_weight << std::endl;
