@@ -15,6 +15,8 @@ public:
     std::vector<double> sense_x;
     std::vector<double> sense_y;
 
+    void prediction(double delta_t, double std_pos[], double velocity, double yaw_rate);
+
     void update_weight(const std::vector <LandmarkObs> transformedObservations, const Map &map_landmarks,
                        const double *std_landmark);
 

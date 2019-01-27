@@ -23,6 +23,7 @@ using std::vector;
 using std::normal_distribution;
 using std::discrete_distribution;
 
+// TODO: move to fields
 std::default_random_engine gen;
 
 void ParticleFilter::init(double x, double y, double theta, double std[]) {
@@ -46,31 +47,13 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
     is_initialized = true;
 }
 
-void ParticleFilter::prediction(double delta_t, double std_pos[],
-                                double velocity, double yaw_rate) {
+void ParticleFilter::prediction(double delta_t, double std_pos[], double velocity, double yaw_rate) {
     if (yaw_rate == 0) {
         yaw_rate = 0.0001;
     }
 
     for (auto &p : particles) {
-
-        // TODO: delegate to Particle class
-
-        // calculate new position from motion data
-        p.x += velocity * (sin(p.theta + yaw_rate * delta_t) - sin(p.theta)) / yaw_rate;
-        p.y += velocity * (cos(p.theta) - cos(p.theta + yaw_rate * delta_t)) / yaw_rate;
-        p.theta += yaw_rate * delta_t;
-
-        // TODO: maybe extract function
-        // create normal distributions for x, y and theta
-        normal_distribution<double> dist_x(p.x, std_pos[0]);
-        normal_distribution<double> dist_y(p.y, std_pos[1]);
-        normal_distribution<double> dist_theta(p.theta, std_pos[2]);
-
-        // update particle position with added noise
-        p.x = dist_x(gen);
-        p.y = dist_y(gen);
-        p.theta = dist_theta(gen);
+        p.prediction(delta_t, std_pos, velocity, yaw_rate);
     }
 }
 
