@@ -1,27 +1,6 @@
 #include "Particle.h"
-#include <random>
 
 using std::vector;
-using std::normal_distribution;
-
-void Particle::prediction(double delta_t, double std_pos[], double velocity, double yaw_rate) {
-    // calculate new position from motion data
-    x += velocity * (sin(theta + yaw_rate * delta_t) - sin(theta)) / yaw_rate;
-    y += velocity * (cos(theta) - cos(theta + yaw_rate * delta_t)) / yaw_rate;
-    theta += yaw_rate * delta_t;
-
-    // TODO: maybe extract function
-    // create normal distributions for x, y and theta
-    normal_distribution<double> dist_x(x, std_pos[0]);
-    normal_distribution<double> dist_y(y, std_pos[1]);
-    normal_distribution<double> dist_theta(theta, std_pos[2]);
-
-    // update particle position with added noise
-    std::default_random_engine gen;
-    x = dist_x(gen);
-    y = dist_y(gen);
-    theta = dist_theta(gen);
-}
 
 void Particle::update_weight(const vector <LandmarkObs> transformedObservations, const Map &map_landmarks,
                              const double *std_landmark) {
