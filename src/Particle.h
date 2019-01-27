@@ -1,7 +1,11 @@
 #ifndef PROJECT_PARTICLE_H
 #define PROJECT_PARTICLE_H
 
+#include <random>
 #include "helper_functions.h"
+
+using std::normal_distribution;
+using std::default_random_engine;
 
 class Particle {
     // TODO: make more fields private
@@ -21,6 +25,8 @@ public:
     Particle(int id, double x, double y, double theta, double weight);
 
     double getWeight();
+
+    void prediction(double delta_t, double std_pos[], double velocity, double yaw_rate, default_random_engine &gen);
 
     void update_weight(const std::vector <LandmarkObs> transformedObservations, const Map &map_landmarks,
                        const double *std_landmark);
