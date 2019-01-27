@@ -28,15 +28,15 @@ double Particle::get_weight() {
     return weight;
 }
 
-vector<int> get_associations() {
+vector<int> Particle::get_associations() {
     return associations;
 }
 
-vector<double> get_sense_x() {
+vector<double> Particle::get_sense_x() {
     return sense_x;
 }
 
-vector<double> get_sense_y() {
+vector<double> Particle::get_sense_y() {
     return sense_y;
 }
 
