@@ -11,19 +11,8 @@
 
 #include <string>
 #include <vector>
+#include "Particle.h"
 #include "helper_functions.h"
-
-struct Particle {
-    int id;
-    double x;
-    double y;
-    double theta;
-    double weight;
-    std::vector<int> associations;
-    std::vector<double> sense_x;
-    std::vector<double> sense_y;
-};
-
 
 class ParticleFilter {
 public:
@@ -63,19 +52,18 @@ public:
      * @param predicted Vector of predicted landmark observations
      * @param observations Vector of landmark observations
      */
-    void dataAssociation(std::vector<LandmarkObs> predicted,
-                         std::vector<LandmarkObs> &observations);
+    void dataAssociation(std::vector <LandmarkObs> predicted,
+                         std::vector <LandmarkObs> &observations);
 
     // TODO: create Particle class, move it there
     // adds those map landmarks within sensor range of the particle to the predicted vector
-    std::vector<LandmarkObs> create_predicted(const Particle &p, double sensor_range, const Map &map_landmarks);
+    std::vector <LandmarkObs> create_predicted(const Particle &p, double sensor_range, const Map &map_landmarks);
 
     // TODO: create Particle class, move it there
     // transform observations from vehicle to map coordinates
-    std::vector <LandmarkObs> transform_observations_coordinates(const Particle &p, const std::vector <LandmarkObs> &observations);
+    std::vector <LandmarkObs>
+    transform_observations_coordinates(const Particle &p, const std::vector <LandmarkObs> &observations);
 
-    // TODO: create Particle class, move it there
-    void update_particle_weight(Particle &p, const std::vector <LandmarkObs> transformedObservations, const Map &map_landmarks, const double std_landmark[]);
 
     /**
      * updateWeights Updates the weights for each particle based on the likelihood
@@ -87,7 +75,7 @@ public:
      * @param map Map class containing map landmarks
      */
     void updateWeights(double sensor_range, double std_landmark[],
-                       const std::vector<LandmarkObs> &observations,
+                       const std::vector <LandmarkObs> &observations,
                        const Map &map_landmarks);
 
     /**
@@ -121,7 +109,7 @@ public:
     std::string getSenseCoord(Particle best, std::string coord);
 
     // Set of current particles
-    std::vector<Particle> particles;
+    std::vector <Particle> particles;
 
 private:
     // Number of particles to draw
