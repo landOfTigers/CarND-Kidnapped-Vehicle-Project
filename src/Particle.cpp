@@ -17,11 +17,11 @@ double Particle::get_x() {
 }
 
 double Particle::get_y() {
-    return x;
+    return y;
 }
 
 double Particle::get_theta() {
-    return x;
+    return theta;
 }
 
 double Particle::get_weight() {
