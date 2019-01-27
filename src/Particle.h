@@ -31,6 +31,8 @@ public:
 
     double get_weight();
 
+    void set_associations(std::vector <LandmarkObs> &transformedObservations);
+
     void prediction(double delta_t, double std_pos[], double velocity, double yaw_rate, default_random_engine &gen);
 
     void update_weight(const std::vector <LandmarkObs> transformedObservations, const Map &map_landmarks,

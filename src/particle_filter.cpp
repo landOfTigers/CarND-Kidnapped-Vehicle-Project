@@ -73,6 +73,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[], c
         if (!predicted.empty()) {
             vector <LandmarkObs> transformedObservations = p.transform_observations_coordinates(observations);
             dataAssociation(predicted, transformedObservations);
+            p.set_associations(transformedObservations);
             p.update_weight(transformedObservations, map_landmarks, std_landmark);
         }
     }
@@ -93,21 +94,6 @@ void ParticleFilter::resample() {
         new_particles.push_back(particles[random_index]);
     }
     particles = new_particles;
-}
-
-// TODO: delete
-void ParticleFilter::SetAssociations(Particle &particle,
-                                     const vector<int> &associations,
-                                     const vector<double> &sense_x,
-                                     const vector<double> &sense_y) {
-    // particle: the particle to which assign each listed association,
-    //   and association's (x,y) world coordinates mapping
-    // associations: The landmark id that goes along with each listed association
-    // sense_x: the associations x mapping already converted to world coordinates
-    // sense_y: the associations y mapping already converted to world coordinates
-    particle.associations = associations;
-    particle.sense_x = sense_x;
-    particle.sense_y = sense_y;
 }
 
 string ParticleFilter::getAssociations(Particle best) {

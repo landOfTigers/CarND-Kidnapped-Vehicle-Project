@@ -28,6 +28,21 @@ double Particle::get_weight() {
     return weight;
 }
 
+void Particle::set_associations(vector <LandmarkObs> &transformedObservations) {
+    vector<int> associations;
+    vector<double> sense_x;
+    vector<double> sense_y;
+    for (auto const &obs : transformedObservations) {
+        associations.push_back(obs.id);
+        sense_x.push_back(obs.x);
+        sense_y.push_back(obs.y);
+    }
+
+    this->associations = associations;
+    this->sense_x = sense_x;
+    this->sense_y = sense_y;
+}
+
 void
 Particle::prediction(double delta_t, double std_pos[], double velocity, double yaw_rate, default_random_engine &gen) {
     // calculate new position from motion data
