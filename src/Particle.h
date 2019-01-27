@@ -6,9 +6,9 @@
 class Particle {
     // TODO: make more fields private
 private:
+    int id;
     double weight;
 public:
-    int id;
     double x;
     double y;
     double theta;
