@@ -50,7 +50,6 @@ Particle::prediction(double delta_t, double std_pos[], double velocity, double y
     y += velocity * (cos(theta) - cos(theta + yaw_rate * delta_t)) / yaw_rate;
     theta += yaw_rate * delta_t;
 
-    // TODO: maybe extract function
     // create normal distributions for x, y and theta
     normal_distribution<double> dist_x(x, std_pos[0]);
     normal_distribution<double> dist_y(y, std_pos[1]);

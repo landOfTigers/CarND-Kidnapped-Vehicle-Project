@@ -5,17 +5,8 @@
  * Author: Tiffany Huang
  */
 
-#include "particle_filter.h"
-
-#include <math.h>
-#include <algorithm>
-#include <iostream>
 #include <iterator>
-#include <numeric>
-#include <random>
-#include <string>
-#include <vector>
-
+#include "particle_filter.h"
 #include "helper_functions.h"
 
 using std::string;
@@ -29,7 +20,7 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
     normal_distribution<double> dist_y(y, std[1]);
     normal_distribution<double> dist_theta(theta, std[2]);
 
-    num_particles = 20;  // TODO: Set the number of particles
+    num_particles = 20;
     for (int i = 0; i < num_particles; i++) {
         Particle p(i, dist_x(gen), dist_y(gen), dist_theta(gen), 1.0f);
         weights.push_back(p.get_weight());
@@ -85,7 +76,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[], c
 }
 
 void ParticleFilter::resample() {
-    std::discrete_distribution<> weights_distribution(weights.begin(), weights.end());
+    discrete_distribution<> weights_distribution(weights.begin(), weights.end());
     vector <Particle> new_particles;
     for (int i = 0; i < num_particles; i++) {
         int random_index = weights_distribution(gen);

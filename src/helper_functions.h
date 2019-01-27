@@ -9,11 +9,8 @@
 #ifndef HELPER_FUNCTIONS_H_
 #define HELPER_FUNCTIONS_H_
 
-#include <math.h>
 #include <fstream>
 #include <sstream>
-#include <string>
-#include <vector>
 #include "map.h"
 
 // for portability of M_PI (Vis Studio, MinGW, etc.)
@@ -125,8 +122,7 @@ inline bool read_map_data(std::string filename, Map &map) {
  * @param filename Name of file containing control measurements.
  * @output True if opening and reading file was successful
  */
-inline bool read_control_data(std::string filename,
-                              std::vector<control_s> &position_meas) {
+inline bool read_control_data(std::string filename, std::vector <control_s> &position_meas) {
     // Get file of position measurements
     std::ifstream in_file_pos(filename.c_str(), std::ifstream::in);
     // Return if we can't open the file
@@ -167,7 +163,7 @@ inline bool read_control_data(std::string filename,
  * @param filename Name of file containing ground truth.
  * @output True if opening and reading file was successful
  */
-inline bool read_gt_data(std::string filename, std::vector<ground_truth> &gt) {
+inline bool read_gt_data(std::string filename, std::vector <ground_truth> &gt) {
     // Get file of position measurements
     std::ifstream in_file_pos(filename.c_str(), std::ifstream::in);
     // Return if we can't open the file
@@ -210,8 +206,7 @@ inline bool read_gt_data(std::string filename, std::vector<ground_truth> &gt) {
  * @param filename Name of file containing landmark observation measurements.
  * @output True if opening and reading file was successful
  */
-inline bool read_landmark_data(std::string filename,
-                               std::vector<LandmarkObs> &observations) {
+inline bool read_landmark_data(std::string filename, std::vector <LandmarkObs> &observations) {
     // Get file of landmark measurements
     std::ifstream in_file_obs(filename.c_str(), std::ifstream::in);
     // Return if we can't open the file
@@ -247,8 +242,7 @@ inline bool read_landmark_data(std::string filename,
     return true;
 }
 
-inline double multiv_prob(double sig_x, double sig_y, double x_obs, double y_obs,
-                   double mu_x, double mu_y) {
+inline double multiv_prob(double sig_x, double sig_y, double x_obs, double y_obs, double mu_x, double mu_y) {
     // calculate normalization term
     double gauss_norm;
     gauss_norm = 1 / (2 * M_PI * sig_x * sig_y);
