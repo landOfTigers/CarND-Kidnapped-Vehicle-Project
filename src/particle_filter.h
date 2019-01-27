@@ -15,6 +15,8 @@
 #include "helper_functions.h"
 
 class ParticleFilter {
+private:
+    std::default_random_engine gen;
 public:
     // Constructor
     // @param num_particles Number of particles

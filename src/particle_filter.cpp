@@ -23,8 +23,6 @@ using std::vector;
 using std::normal_distribution;
 using std::discrete_distribution;
 
-std::default_random_engine gen;
-
 void ParticleFilter::init(double x, double y, double theta, double std[]) {
     // create normal distributions for x, y and theta
     normal_distribution<double> dist_x(x, std[0]);
