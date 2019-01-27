@@ -21,6 +21,7 @@
 using std::string;
 using std::vector;
 using std::normal_distribution;
+using std::discrete_distribution;
 
 std::default_random_engine gen;
 
@@ -47,6 +48,7 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
         p.y = dist_y(gen);
         p.theta = dist_theta(gen);
         p.weight = 1.0f;
+        weights.push_back(p.weight); // TODO: Why do we store theses values twice?
         particles.push_back(p);
     }
 
@@ -81,8 +83,8 @@ void ParticleFilter::prediction(double delta_t, double std_pos[],
     }
 }
 
-void ParticleFilter::dataAssociation(vector<LandmarkObs> predicted,
-                                     vector<LandmarkObs> &observations) {
+void ParticleFilter::dataAssociation(vector <LandmarkObs> predicted,
+                                     vector <LandmarkObs> &observations) {
     /**
      * TODO: Find the predicted measurement that is closest to each
      *   observed measurement and assign the observed measurement to this
@@ -104,7 +106,7 @@ void ParticleFilter::dataAssociation(vector<LandmarkObs> predicted,
 }
 
 void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
-                                   const vector<LandmarkObs> &observations,
+                                   const vector <LandmarkObs> &observations,
                                    const Map &map_landmarks) {
     /**
      * TODO: Update the weights of each particle using a multi-variate Gaussian
@@ -119,10 +121,11 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
      *   and the following is a good resource for the actual equation to implement
      *   (look at equation 3.33) http://planning.cs.uiuc.edu/node99.html
      */
-    for (auto &p : particles) {
+    weights.clear();
 
+    for (auto &p : particles) {
         // add those map landmarks within sensor range of the particle to the predicted vector
-        vector<LandmarkObs> predicted;
+        vector <LandmarkObs> predicted;
         for (auto const &landmark : map_landmarks.landmark_list) {
             double particle2LandmarkDistance = dist(p.x, p.y, landmark.x_f, landmark.y_f);
             if (particle2LandmarkDistance < sensor_range) {
@@ -136,7 +139,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
         }
 
         // predict landmark measurements (transform from vehicle to map coordinates)
-        vector<LandmarkObs> transformedObservations;
+        vector <LandmarkObs> transformedObservations;
         for (auto &obs : observations) {
             double x_map = p.x + (cos(p.theta) * obs.x) - (sin(p.theta) * obs.y);
             double y_map = p.y + (sin(p.theta) * obs.x) + (cos(p.theta) * obs.y);
@@ -186,6 +189,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
         // TODO: normalize weight?
 
         p.weight = weight;
+        weights.push_back(p.weight);
     }
 }
 
@@ -196,7 +200,17 @@ void ParticleFilter::resample() {
      * NOTE: You may find std::discrete_distribution helpful here.
      *   http://en.cppreference.com/w/cpp/numeric/random/discrete_distribution
      */
+    vector <Particle> new_particles;
+    // Setup the random bits
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    // Create the distribution with weights
+    std::discrete_distribution<> d(weights.begin(), weights.end());
+    for (int j = 0; i < num_particles; j++) {
+        new_particles.push_back(particles[d(gen)]);
+    }
 
+    particles = new_particles;
 }
 
 void ParticleFilter::SetAssociations(Particle &particle,
