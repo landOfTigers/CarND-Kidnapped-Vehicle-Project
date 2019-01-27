@@ -17,6 +17,9 @@ public:
 
     void update_weight(const std::vector <LandmarkObs> transformedObservations, const Map &map_landmarks,
                        const double *std_landmark);
+
+    // adds those map landmarks within sensor range of the particle to the predicted vector
+    std::vector <LandmarkObs> create_predicted(double sensor_range, const Map &map_landmarks);
 };
 
 #endif //PROJECT_PARTICLE_H

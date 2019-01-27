@@ -11,3 +11,14 @@ void Particle::update_weight(const vector <LandmarkObs> transformedObservations,
     }
     this->weight = weight;
 }
+
+vector <LandmarkObs> Particle::create_predicted(double sensor_range, const Map &map_landmarks) {
+    vector <LandmarkObs> predicted;
+    for (auto const &landmark : map_landmarks.landmark_list) {
+        double particle2LandmarkDistance = dist(x, y, landmark.x_f, landmark.y_f);
+        if (particle2LandmarkDistance < sensor_range) {
+            predicted.push_back({landmark.id_i, landmark.x_f, landmark.y_f});
+        }
+    }
+    return predicted;
+}

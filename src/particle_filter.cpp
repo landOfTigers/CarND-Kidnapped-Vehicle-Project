@@ -90,18 +90,6 @@ void ParticleFilter::dataAssociation(vector <LandmarkObs> predicted,
 }
 
 vector <LandmarkObs>
-ParticleFilter::create_predicted(const Particle &p, double sensor_range, const Map &map_landmarks) {
-    vector <LandmarkObs> predicted;
-    for (auto const &landmark : map_landmarks.landmark_list) {
-        double particle2LandmarkDistance = dist(p.x, p.y, landmark.x_f, landmark.y_f);
-        if (particle2LandmarkDistance < sensor_range) {
-            predicted.push_back({landmark.id_i, landmark.x_f, landmark.y_f});
-        }
-    }
-    return predicted;
-}
-
-vector <LandmarkObs>
 ParticleFilter::transform_observations_coordinates(const Particle &p, const vector <LandmarkObs> &observations) {
     vector <LandmarkObs> transformedObservations;
     for (auto &obs : observations) {
@@ -117,7 +105,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
                                    const Map &map_landmarks) {
 
     for (auto &p : particles) {
-        vector <LandmarkObs> predicted = create_predicted(p, sensor_range, map_landmarks);
+        vector <LandmarkObs> predicted = p.create_predicted(sensor_range, map_landmarks);
         if (!predicted.empty()) {
             vector <LandmarkObs> transformedObservations = transform_observations_coordinates(p, observations);
             dataAssociation(predicted, transformedObservations);
