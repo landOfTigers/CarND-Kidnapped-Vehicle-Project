@@ -14,11 +14,10 @@ private:
     double y;
     double theta;
     double weight;
-public:
     std::vector<int> associations;
     std::vector<double> sense_x;
     std::vector<double> sense_y;
-
+public:
     Particle();
 
     Particle(int id, double x, double y, double theta, double weight);
@@ -30,6 +29,12 @@ public:
     double get_theta();
 
     double get_weight();
+
+    std::vector<int> get_associations();
+
+    std::vector<double> get_sense_x();
+
+    std::vector<double> get_sense_y();
 
     void set_associations(std::vector <LandmarkObs> &transformedObservations);
 

@@ -28,6 +28,18 @@ double Particle::get_weight() {
     return weight;
 }
 
+vector<int> get_associations() {
+    return associations;
+}
+
+vector<double> get_sense_x() {
+    return sense_x;
+}
+
+vector<double> get_sense_y() {
+    return sense_y;
+}
+
 void Particle::set_associations(vector <LandmarkObs> &transformedObservations) {
     vector<int> associations;
     vector<double> sense_x;

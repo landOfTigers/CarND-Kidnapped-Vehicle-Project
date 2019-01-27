@@ -86,7 +86,7 @@ void ParticleFilter::resample() {
 }
 
 string ParticleFilter::getAssociations(Particle best) {
-    vector<int> v = best.associations;
+    vector<int> v = best.get_associations();
     std::stringstream ss;
     copy(v.begin(), v.end(), std::ostream_iterator<int>(ss, " "));
     string s = ss.str();
@@ -98,9 +98,9 @@ string ParticleFilter::getSenseCoord(Particle best, string coord) {
     vector<double> v;
 
     if (coord == "X") {
-        v = best.sense_x;
+        v = best.get_sense_x();
     } else {
-        v = best.sense_y;
+        v = best.get_sense_y();
     }
 
     std::stringstream ss;
