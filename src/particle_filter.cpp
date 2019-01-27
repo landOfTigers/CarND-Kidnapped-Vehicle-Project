@@ -40,7 +40,7 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
     normal_distribution<double> dist_y(y, std[1]);
     normal_distribution<double> dist_theta(theta, std[2]);
 
-    num_particles = 100;  // TODO: Set the number of particles
+    num_particles = 20;  // TODO: Set the number of particles
     for (int i = 0; i < num_particles; i++) {
         Particle p;
         p.id = i;
@@ -65,6 +65,10 @@ void ParticleFilter::prediction(double delta_t, double std_pos[],
      *  http://www.cplusplus.com/reference/random/default_random_engine/
      */
 
+    if (yaw_rate == 0) {
+        yaw_rate = 0.0001;
+    }
+
     for (auto &p : particles) {
         // update particle position
         p.x += velocity * (sin(p.theta + yaw_rate * delta_t) - sin(p.theta)) / yaw_rate;
@@ -77,9 +81,9 @@ void ParticleFilter::prediction(double delta_t, double std_pos[],
         normal_distribution<double> dist_theta(p.theta, std_pos[2]);
 
         // add noise
-        p.x += dist_x(gen);
-        p.y += dist_y(gen);
-        p.theta += dist_theta(gen);
+        p.x = dist_x(gen);
+        p.y = dist_y(gen);
+        p.theta = dist_theta(gen);
     }
 }
 
@@ -95,10 +99,11 @@ void ParticleFilter::dataAssociation(vector <LandmarkObs> predicted,
      */
     for (auto &obs : observations) {
         // associate map landmark id of closest landmark
-        float min_dist = 1e6;
+        double min_dist = std::numeric_limits<double>::max();
         for (auto const &pred : predicted) {
             double distance = dist(obs.x, obs.y, pred.x, pred.y);
             if (distance < min_dist) {
+                min_dist = distance;
                 obs.id = pred.id;
             }
         }
@@ -124,6 +129,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
     weights.clear();
 
     for (auto &p : particles) {
+
         // add those map landmarks within sensor range of the particle to the predicted vector
         vector <LandmarkObs> predicted;
         for (auto const &landmark : map_landmarks.landmark_list) {
@@ -134,7 +140,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
                         landmark.x_f,
                         landmark.y_f
                 };
-                predicted.push_back(mappedLandmark);
+                predicted.push_back(mappedLandmark); // TODO: inline
             }
         }
 
@@ -148,48 +154,51 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
                     x_map,
                     y_map
             };
-            transformedObservations.push_back(transformedObservation);
+            transformedObservations.push_back(transformedObservation); // TODO: inline
         }
 
         // use dataAssociation fct to associate sensor measurements to map landmarks
-        dataAssociation(predicted, transformedObservations);
+        if (!predicted.empty()) {
+            dataAssociation(predicted, transformedObservations);
 
-        vector<int> associations;
-        vector<double> sense_x;
-        vector<double> sense_y;
-        for (auto const &obs : transformedObservations) {
-            associations.push_back(obs.id);
-            sense_x.push_back(obs.x);
-            sense_y.push_back(obs.y);
+
+            // TODO: is this necessary?
+//            vector<int> associations;
+//            vector<double> sense_x;
+//            vector<double> sense_y;
+//            for (auto const &obs : transformedObservations) {
+//                associations.push_back(obs.id);
+//                sense_x.push_back(obs.x);
+//                sense_y.push_back(obs.y);
+//            }
+//            SetAssociations(p, associations, sense_x, sense_y);
+
+
+            // determine weight
+            double weight = 1.0;
+            for (auto const &obs : transformedObservations) {
+//                // find landmark with obs.id in predicted
+//                LandmarkObs associatedLandmark;
+//                for (const auto &landmark : predicted) {
+//                    if (landmark.id == obs.id) {
+//                        associatedLandmark = landmark;
+//                    }
+//                }
+                auto lm = map_landmarks.landmark_list[obs.id - 1];
+                LandmarkObs associatedLandmark{ // TODO: inline
+                        lm.id_i,
+                        lm.x_f,
+                        lm.y_f
+                };
+                weight *= multiv_prob(std_landmark[0], std_landmark[1], obs.x, obs.y, associatedLandmark.x,
+                                      associatedLandmark.y);
+            }
+
+            // TODO: normalize weight?
+
+            p.weight = weight;
+            weights.push_back(p.weight); // TODO: why do we need weights?
         }
-        SetAssociations(p, associations, sense_x, sense_y);
-
-        // determine weight
-        double weight = 1.0;
-        for (auto const &obs : transformedObservations) {
-//           // find landmark with obs.id in predicted
-//           LandmarkObs associatedLandmark;
-//           for(const auto & landmark : predicted) {
-//               if(landmark.id == obs.id) {
-//                   associatedLandmark = landmark;
-//               }
-//           }
-
-            auto lm = map_landmarks.landmark_list[obs.id - 1];
-            LandmarkObs associatedLandmark{
-                    lm.id_i,
-                    lm.x_f,
-                    lm.y_f
-            };
-
-            weight *= multiv_prob(std_landmark[0], std_landmark[1], obs.x, obs.y, associatedLandmark.x,
-                                  associatedLandmark.y);
-        }
-
-        // TODO: normalize weight?
-
-        p.weight = weight;
-        weights.push_back(p.weight);
     }
 }
 
