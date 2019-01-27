@@ -89,17 +89,6 @@ void ParticleFilter::dataAssociation(vector <LandmarkObs> predicted,
     }
 }
 
-vector <LandmarkObs>
-ParticleFilter::transform_observations_coordinates(const Particle &p, const vector <LandmarkObs> &observations) {
-    vector <LandmarkObs> transformedObservations;
-    for (auto &obs : observations) {
-        double x_map = p.x + (cos(p.theta) * obs.x) - (sin(p.theta) * obs.y);
-        double y_map = p.y + (sin(p.theta) * obs.x) + (cos(p.theta) * obs.y);
-        transformedObservations.push_back({obs.id, x_map, y_map});
-    }
-    return transformedObservations;
-}
-
 void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
                                    const vector <LandmarkObs> &observations,
                                    const Map &map_landmarks) {
@@ -107,7 +96,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
     for (auto &p : particles) {
         vector <LandmarkObs> predicted = p.create_predicted(sensor_range, map_landmarks);
         if (!predicted.empty()) {
-            vector <LandmarkObs> transformedObservations = transform_observations_coordinates(p, observations);
+            vector <LandmarkObs> transformedObservations = p.transform_observations_coordinates(observations);
             dataAssociation(predicted, transformedObservations);
             p.update_weight(transformedObservations, map_landmarks, std_landmark);
         }

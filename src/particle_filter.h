@@ -55,12 +55,6 @@ public:
     void dataAssociation(std::vector <LandmarkObs> predicted,
                          std::vector <LandmarkObs> &observations);
 
-    // TODO: create Particle class, move it there
-    // transform observations from vehicle to map coordinates
-    std::vector <LandmarkObs>
-    transform_observations_coordinates(const Particle &p, const std::vector <LandmarkObs> &observations);
-
-
     /**
      * updateWeights Updates the weights for each particle based on the likelihood
      *   of the observed measurements.

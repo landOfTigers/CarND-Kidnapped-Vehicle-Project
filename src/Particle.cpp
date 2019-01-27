@@ -22,3 +22,13 @@ vector <LandmarkObs> Particle::create_predicted(double sensor_range, const Map &
     }
     return predicted;
 }
+
+vector <LandmarkObs> Particle::transform_observations_coordinates(const vector <LandmarkObs> &observations) {
+    vector <LandmarkObs> transformedObservations;
+    for (auto &obs : observations) {
+        double x_map = x + (cos(theta) * obs.x) - (sin(theta) * obs.y);
+        double y_map = y + (sin(theta) * obs.x) + (cos(theta) * obs.y);
+        transformedObservations.push_back({obs.id, x_map, y_map});
+    }
+    return transformedObservations;
+}

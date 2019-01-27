@@ -20,6 +20,10 @@ public:
 
     // adds those map landmarks within sensor range of the particle to the predicted vector
     std::vector <LandmarkObs> create_predicted(double sensor_range, const Map &map_landmarks);
+
+    // transforms observations from vehicle to map coordinates
+    std::vector <LandmarkObs> transform_observations_coordinates(const std::vector <LandmarkObs> &observations);
+
 };
 
 #endif //PROJECT_PARTICLE_H
