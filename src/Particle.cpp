@@ -1,7 +1,6 @@
 #include "Particle.h"
 
 using std::vector;
-.
 Particle::Particle() {}
 
 Particle::Particle(int id, double x, double y, double theta, double weight) {
