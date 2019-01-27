@@ -1,6 +1,16 @@
 #include "Particle.h"
 
 using std::vector;
+.
+Particle::Particle() {}
+
+Particle::Particle(int id, double x, double y, double theta, double weight) {
+    this->id = id;
+    this->x = x;
+    this->y = y;
+    this->theta = theta;
+    this->weight = weight;
+}
 
 void Particle::update_weight(const vector <LandmarkObs> transformedObservations, const Map &map_landmarks,
                              const double *std_landmark) {

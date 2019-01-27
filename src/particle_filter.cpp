@@ -33,12 +33,7 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
 
     num_particles = 20;  // TODO: Set the number of particles
     for (int i = 0; i < num_particles; i++) {
-        Particle p;
-        p.id = i;
-        p.x = dist_x(gen);
-        p.y = dist_y(gen);
-        p.theta = dist_theta(gen);
-        p.weight = 1.0f;
+        Particle p(i, dist_x(gen), dist_y(gen), dist_theta(gen), 1.0f);
         weights.push_back(p.weight);
         particles.push_back(p);
     }

@@ -15,6 +15,10 @@ public:
     std::vector<double> sense_x;
     std::vector<double> sense_y;
 
+    Particle();
+
+    Particle(int id, double x, double y, double theta, double weight);
+
     void update_weight(const std::vector <LandmarkObs> transformedObservations, const Map &map_landmarks,
                        const double *std_landmark);
 
